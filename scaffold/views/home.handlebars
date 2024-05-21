@@ -1,0 +1,140 @@
+{{! Use the main layout }}
+{{!< main }}
+
+{{! New Post Submission Form }}
+<section class="content-container">
+    {{#if loggedIn}}
+        <!-- show the create post form when logged in -->
+        
+            
+        <section class="post-form">
+            <!-- make a header here -->
+            <form action="/posts" method="POST">
+                <!-- title input field name = "title" -->
+                <!-- text area input field name = "content" -->
+                <label for="title">Title:</label>
+                <input type="text"  name="title" required>
+
+                <label for="content">Content:</label>
+                <textarea  name="content" rows="4" cols="50" required></textarea>
+
+                <div class="form-actions">
+                    <button type="button" class="emoji-button" onclick="toggleEmojiPanel()">😀</button>
+                    
+                    <button type="submit" class="post-button">Post</button>
+                </div>
+            </form>
+
+            <div id="emoji-container" class="emoji-panel" style="display: none;">
+                <!-- input field for the emoji search, use oninput="searchEmojis() -->
+                <!-- a div, id = "emoji-grid" -->
+                 <div id="emoji-grid" style="border: 1px solid black; padding: 5px;" width = "400px" height = "400px">
+                    <!-- Emoji will be displayed here -->
+                </div>
+            </div>
+        </section>
+        
+    {{/if}}
+
+    <section class="posts-list">
+        <!-- recent posts -->
+        {{#if posts.length}} <!--if there are posts?-->
+        
+            <ul>
+        {{#each posts}}
+            {{#if id}} <!-- Check if the post has an ID -->
+                {{> post post=this user=../user}} <!--context switch!!!-->
+            {{/if}}
+        {{/each}}
+    
+        </ul>
+        {{else}}
+            <h1>NO POSTS GO HOME</h1>
+            <!-- no posts, oh no, what now? -->
+        {{/if}}
+    </section>
+</section>
+
+
+{{! JavaScript for Emoji Integration }}
+<script>
+
+/*
+ You want to show a subset of the emojis. About 200. However,
+ you also want the user to be able to search all emojis,
+ so, put them in this array when the array is empty so 
+ that you have them.
+*/
+
+let allEmojis = [
+  "😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "🥰",
+  "😘", "😗", "😙", "😚", "😋", "😛", "😝", "😜", "🤪", "🤨", "🧐", "🤓", "😎", "🤩", "😏", "😒", "😞",
+  "😔", "😟", "😕", "🙁", "😣", "😖", "😫", "😩", "🥺", "😢", "😭", "😤", "😠", "😡", "🤬", "🤯", "😳",
+  "🥵", "🥶", "😱", "😨", "😰", "😥", "😓", "🤗", "🤔", "🤭", "🤫", "🤥", "😶", "😐", "😑", "😬", "🙄",
+  "😯", "😦", "😧", "😮", "😲", "🥱", "😴", "🤤", "😪", "😵", "🤐", "🥴", "🤢", "🤮", "🤧", "😷", "🤒",
+  "🤕", "🤑", "🤠", "😈", "👿", "👹", "👺", "🤡", "💩", "👻", "💀", "☠️", "👽", "👾", "🤖", "🎃", "😺",
+  "😸", "😹", "😻", "😼", "😽", "🙀", "😿", "😾", "💋", "👋", "🤚", "🖐️", "✋", "🖖", "👌", "🤏", "✌️",
+  "🤞", "🤟", "🤘", "🤙", "👈", "👉", "👆", "🖕", "👇", "☝️", "👍", "👎", "✊", "👊", "🤛", "🤜", "👏",
+  "🙌", "👐", "🤲", "🤝", "🙏", "✍️", "💅", "🤳", "💪", "🦾", "🦵", "🦿", "🦶", "👂", "🦻", "👃", "🧠",
+  "🦷", "🦴", "👀", "👁️", "👅", "👄", "👶", "🧒", "👦", "👧", "🧑", "👱", "👨", "🧔", "👱‍♂️", "👨‍🦰",
+  "👨‍🦱", "👨‍🦳", "👨‍🦲", "👩", "👱‍♀️", "👩‍🦰", "👩‍🦱", "👩‍🦳", "👩‍🦲", "🧓", "👴", "👵", "🙍", "🙍‍♂️",
+  "🙍‍♀️", "🤦", "🤦‍♂️", "🤦‍♀️", "🙎", "🙎‍♂️", "🙎‍♀️", "🙅", "🙅‍♂️", "🙅‍♀️", "🙆", "🙆‍♂️", "🙆‍♀️", "💁",
+  "💁‍♂️", "💁‍♀️", "🙋", "🙋‍♂️", "🙋‍♀️", "🧏", "🧏‍♂️", "🧏‍♀️", "🙇", "🙇‍♂️", "🙇‍♀️", "🤷", "🤷‍♂️", "🤷‍♀️",
+  "💆", "💆‍♂️", "💆‍♀️", "💇", "💇‍♂️", "💇‍♀️", "🚶", "🚶‍♂️", "🚶‍♀️", "🧍", "🧍‍♂️", "🧍‍♀️", "🧎", "🧎‍♂️",
+  "🧎‍♀️", "🧑‍🦯", "👨‍🦯", "👩‍🦯", "🧑‍🦼"];
+function toggleEmojiPanel() {
+    const container = document.getElementById('emoji-container');
+    container.style.display = container.style.display === 'none' ? 'block' : 'none';
+    //console.log({{emojis}}); //wont log??!!!
+    //displayEmojis({{emojis}});
+    displayEmojis(allEmojis);
+    if(container.style.display === 'block' && allEmojis.length == 0){
+        // go "Fetch" you some emojis and show them off with displayEmojies
+        //callapp.post('/emojis')
+    }
+}
+
+function displayEmojis(emojis,limit=200) {
+    //https://emoji-api.com/
+    const container = document.getElementById('emoji-grid');
+    container.innerHTML = '';  // Clear previous results
+    console.log("hejrhe");
+    console.log(emojis);
+    if (Array.isArray(emojis) && emojis.length > 0) {
+        emojis.slice(0, limit).forEach(emoji => {
+            const emojiElement = document.createElement('span');
+            //emojiElement.textContent = emoji.character;
+            emojiElement.textContent = emoji
+            emojiElement.title = emoji;  // Showing the emoji name on hover UNDEFINED!, .slug
+            emojiElement.style.cursor = 'pointer';
+            emojiElement.onclick = () => insertEmoji(emoji); //.character
+            container.appendChild(emojiElement);
+        });
+    } else {
+        container.textContent = 'No emojis found. Try a different search!';
+    }
+    //container.innerHTML = allEmojis;
+}
+
+function searchEmojis() {
+    const searchTerm = document.getElementById('emoji-search').value.toLowerCase();
+    // array.filter takes a predicate
+    // use string.includes. 
+
+    //const filteredEmojis = allEmojis.filter(...); 
+    
+    //displayEmojis(filteredEmojis);
+}
+
+function insertEmoji(emoji) {
+    // put an emoji on a form somehow. 
+    // do this when you're doing getting the emoji on the form
+    const textarea = document.querySelector('textarea[name="content"]');
+
+    textarea.value += emoji;
+    
+   
+    textarea.focus();  //Keep focus on the textarea
+}
+</script>
+

@@ -1,0 +1,63 @@
+{{! Partial for a single post }}
+<div class="post">
+    <div class="post-avatar">
+        <!-- the user's avatar <img src="{{user.avatar}}" alt="User Avatar">-->
+    </div>
+    <div class="post-content preserve-newlines">
+        <!-- the post -->
+        <div class="post-status-bar">
+            <!-- everything that is shown in the status bar -->
+            <!-- Heart = ♥ -->
+            <!-- font awesome  trashcan = <i class="fas fa-trash-alt"> </i>-->
+        
+        <img src="{{#if user.avatdar_url}}
+                                        {{user.avatar_url}}
+                                    {{else}}
+                                        /css/avatars/{{firstCharacter post.username}}.png
+
+                                    {{/if}}" 
+                                    alt="User Avatar1" 
+                                    class="header-avatar"
+                                    height = "40px"
+                                    width = "40px">
+        <div class="title-box">
+            <p class = "noPadding">{{post.title}}</p>
+            <p class = "time-posted">Posted on: {{post.timestamp}}</p>
+        </div>
+        <div class="content-box">
+            <p>{{post.content}}</p>
+ 
+            <p class = "posted">Posted by: {{post.username}}</p>
+            <p class = "likes">Likes {{post.likes}}</p>
+
+
+            {{#ifCond post.username user.username}}
+                    <form action="/delete/{{post.id}}" method="POST">
+                        <button type="submit" class="likeButton"><i class="fas fa-trash-alt"></i></button>
+                    </form>
+            {{else}}
+                <form action="/like/{{post.id}}" method="POST">
+                    <button type="submit" class="likeButton"><i class="fas fa-heart"></i></button>
+                </form>
+            {{/ifCond}} 
+        
+        </div>
+        </div>        
+    </div>
+</div>
+<script>
+
+    function handleLikeClick(event) {
+        const postId = event.target.getAttribute('data-id');
+
+        // you might want to "fetch" something...        
+    }
+
+    function handleDeleteClick(event) {
+        const buttonElement = event.target.closest('.delete-button');
+        const postId = buttonElement.getAttribute('data-id');        
+
+        // you might want to "fetch" something...        
+        
+    }    
+</script>

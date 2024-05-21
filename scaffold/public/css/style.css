@@ -1,0 +1,85 @@
+.post {
+    width: 35%;
+    height: 40%;
+    margin-left: auto; 
+    margin-right: 0;
+    margin-bottom: 20px;
+}
+
+.post-status-bar {
+    display: flex;
+    flex-direction: column;
+}
+.header-logo {
+    width: 10%;
+    height: 10%;
+}
+.title-box {
+    width: 70%;
+    background-color: lightgreen;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 3px;
+    padding: 5px;
+    text-align: center;
+    margin: 0 auto; 
+    
+}
+.header-avatar {
+    width: 7%;
+    height: 7%;
+    border-radius: 50%;
+}
+.noPadding {
+    padding: 0;
+}
+.content-box {
+    position: relative;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 5px;
+    word-wrap: break-word;
+}
+.banner {
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 5px;
+}
+.posted {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    margin: 0;
+}
+.timePosted {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 0;
+}
+.likeButton {
+    position: absolute;
+    bottom: 20;
+    right: 0;
+    margin: 0;
+    color: red;
+}
+.likes {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    margin: 0;
+    margin-right: 5;
+}
+/*{{#each posts}}
+                <!-- you have to pass the user in to posts and this is the syntax -->
+                <!--post.handlebars is called-->
+                {{#if (isEven @index)}}
+                <!-- you have to pass the user in to posts and this is the syntax -->
+                <!-- direct index calls fix it, -->
+                {{> post post=this user=user}}
+            {{/if}}
+                <!--{{> post this user=../user}} -->           
+            {{/each}}*/
